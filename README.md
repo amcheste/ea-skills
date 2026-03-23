@@ -16,6 +16,7 @@ These skills are designed for use with [Claude](https://claude.ai) in Cowork mod
 | [Inbox Processing](skills/inbox-processing/) | Scans Gmail and Slack for action items, surfaces them in your daily note | Done |
 | [Project Setup](skills/project-setup/) | Creates project notes from templates with proper linking and task breakdown | Done |
 | [Meeting Notes](skills/meeting-notes/) | Creates meeting notes with prep mode, capture mode, and action item tracking | Done |
+| [Task Manager](skills/task-manager/) | Apple Reminders integration with Eisenhower matrix prioritization, synced to vault | Done |
 
 ### Templates
 
@@ -61,7 +62,17 @@ The daily note template comes with generic "Work" and "Personal" log sections. C
 
 Edit both the template and the skill's SKILL.md to match your categories.
 
-### 4. Optional: Google Calendar Integration
+### 4. Optional: Apple Reminders Integration
+
+The task manager skill uses AppleScript to read and write Apple Reminders. Set up these lists in your Reminders app to match the skill's routing:
+
+- **Personal** — life admin, errands, family, health
+- **Academic** — coursework, assignments, research deadlines
+- **Side Projects** — personal projects and experiments
+
+The skill includes bundled AppleScript files (`scripts/`) that handle reading, adding, and completing reminders. These work on any Mac with the Reminders app — no additional setup required.
+
+### 5. Optional: Google Calendar Integration
 
 The daily note skill can pull events from Google Calendar if you have the Google Calendar MCP connector set up in Claude. Without it, the schedule section will be left blank for you to fill in manually.
 

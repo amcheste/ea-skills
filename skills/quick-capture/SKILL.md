@@ -21,9 +21,10 @@ The whole interaction should feel instant. The user shouldn't have to think abou
 
 Here's how to decide where something lands:
 
-### Tasks and reminders → Today's Daily Note, Inbox section
+### Tasks and reminders → Today's Daily Note + Apple Reminders
 Anything that needs to be done. "Remind me to...", "I need to...", "Don't forget to..."
 - Add as a `- [ ]` checkbox item in the **Inbox** section of today's daily note
+- **Also add to Apple Reminders** using the AppleScript at `../task-manager/scripts/reminders_add.scpt`. Route to the right list: Academic, Personal, or Side Projects based on context.
 - If the task clearly belongs to a specific Log category (Academic, Work, Personal, etc.), also consider putting it there instead
 
 ### Ideas → Ideas folder
@@ -63,3 +64,5 @@ When in doubt, put it in today's Inbox. The user can sort it later during their 
 4. **Use Edit, not Write.** When adding to an existing note, use the Edit tool to insert content in the right section. Don't rewrite the entire file.
 
 5. **Batch captures are fine.** If the user rattles off five things at once, capture all of them. Don't make them send one at a time.
+
+6. **Tasks go to both places.** If something is actionable (a todo, reminder, or deadline), add it to both the daily note AND Apple Reminders so it syncs to the user's phone. Use the AppleScript at `../task-manager/scripts/reminders_add.scpt`.

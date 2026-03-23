@@ -11,10 +11,11 @@ These skills are designed for use with [Claude](https://claude.ai) in Cowork mod
 | Skill | Description | Status |
 |-------|-------------|--------|
 | [Daily Note](skills/obsidian-daily-note/) | Creates and manages daily journal notes with morning planning, calendar integration, carry-forward from yesterday, and evening reflection | Done |
-| Weekly Review | Generates weekly review notes, summarizes daily notes, previews next week's calendar | Planned |
-| Inbox Processing | Scans Gmail and Slack for action items, surfaces them in your daily note | Planned |
-| Project Setup | Creates project notes from templates with proper linking | Planned |
-| Meeting Notes | Creates meeting notes, optionally pre-filled from calendar events | Planned |
+| [Quick Capture](skills/quick-capture/) | Zero-friction note capture — just say what's on your mind and it gets filed in the right place | Done |
+| [Weekly Review](skills/weekly-review/) | Generates weekly review notes, summarizes daily notes, previews next week's calendar | Done |
+| [Inbox Processing](skills/inbox-processing/) | Scans Gmail and Slack for action items, surfaces them in your daily note | Done |
+| [Project Setup](skills/project-setup/) | Creates project notes from templates with proper linking and task breakdown | Done |
+| [Meeting Notes](skills/meeting-notes/) | Creates meeting notes with prep mode, capture mode, and action item tracking | Done |
 
 ### Templates
 

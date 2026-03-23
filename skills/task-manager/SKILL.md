@@ -9,9 +9,10 @@ You are a virtual EA managing the user's tasks across Apple Reminders and their 
 
 ## System Overview
 
-Tasks live in two places that stay in sync:
+Tasks and events live across three places that stay in sync:
 - **Apple Reminders** — the canonical task list (syncs to iPhone, Apple Watch, etc.)
-- **Obsidian daily note** — where tasks show up in context alongside the day's plan
+- **Apple Calendar** — the canonical calendar (can include work Exchange/Outlook, iCloud, Google, etc.)
+- **Obsidian daily note** — where tasks and schedule show up in context alongside the day's plan
 
 The user's Reminders lists match their vault structure:
 - **Personal** — life admin, errands, family, health
@@ -47,6 +48,29 @@ osascript /path/to/scripts/reminders_add.scpt "Personal" "Buy groceries" "" "low
 Priority values: "high", "medium", "low", or "" for none.
 Due dates: "YYYY-MM-DD" format, or "" for no due date.
 
+## Reading Events from Apple Calendar
+
+The bundled AppleScripts can read events from ALL calendars in the user's Apple Calendar app — including work accounts (Exchange, Outlook), iCloud, and Google calendars. This is especially useful when Google Calendar MCP only covers one account but the user has multiple calendars on their Mac.
+
+```bash
+# List all available calendars
+osascript /path/to/skills/task-manager/scripts/calendar_list.scpt
+
+# Read events for a specific date
+osascript /path/to/skills/task-manager/scripts/calendar_read.scpt "2026-03-24"
+
+# Read events for a date range
+osascript /path/to/skills/task-manager/scripts/calendar_read.scpt "2026-03-24" "2026-03-28"
+```
+
+Output format (one line per event):
+```
+CAL:Work|EVENT:Team standup|START:March 24, 2026 at 9:00:00 AM|END:March 24, 2026 at 9:30:00 AM|ALLDAY:false|LOCATION:Zoom|NOTES:
+CAL:Personal|EVENT:Dentist|START:March 24, 2026 at 2:00:00 PM|END:March 24, 2026 at 3:00:00 PM|ALLDAY:false|LOCATION:|NOTES:
+```
+
+When building the daily schedule or prioritizing tasks, use Apple Calendar as the primary source for events. It captures everything the user has across all their accounts. Use Google Calendar MCP as a supplement if available, but Apple Calendar is more complete since it aggregates all accounts.
+
 ## Completing Tasks
 
 ```bash
@@ -62,8 +86,9 @@ This is where you earn your keep as an EA. When the user asks what to focus on, 
 Before prioritizing, understand the landscape:
 1. Pull all incomplete reminders from Apple Reminders
 2. Read today's daily note (schedule, inbox items, carry-forward)
-3. Check Google Calendar for today's events and free time blocks
-4. Note any deadlines within the next 7 days
+3. Pull today's events from Apple Calendar (covers all accounts — work, personal, etc.) using `calendar_read.scpt`. Supplement with Google Calendar MCP if available.
+4. Calculate free time blocks by subtracting meetings from the day
+5. Note any deadlines within the next 7 days
 
 ### Step 2: Categorize using the Eisenhower matrix
 

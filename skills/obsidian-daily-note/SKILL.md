@@ -33,7 +33,13 @@ Look for the most recent daily note before today. Read it to find:
 These become the "Carry-Forward from Yesterday" section.
 
 ### 4. Pull today's calendar
-Use the Google Calendar tools (`gcal_list_events`) to fetch today's events. Format them as a clean schedule with times. If calendar access isn't available, leave the schedule section with a placeholder for the user to fill in.
+Try these sources in order to get the most complete picture:
+
+1. **Apple Calendar (preferred)** — use the AppleScript at `../task-manager/scripts/calendar_read.scpt` to read today's events. This covers ALL accounts the user has added (work Exchange/Outlook, iCloud, Google, etc.) in one call: `osascript /path/to/scripts/calendar_read.scpt "YYYY-MM-DD"`
+2. **Google Calendar MCP** — use `gcal_list_events` as a supplement or fallback if AppleScript isn't available.
+3. If neither is available, leave the schedule section with a placeholder for the user to fill in.
+
+Format events as a clean schedule with times, sorted chronologically. Include the calendar name in brackets if the user has multiple accounts (e.g., `[Work]`, `[Personal]`).
 
 ### 5. Assemble the daily note
 

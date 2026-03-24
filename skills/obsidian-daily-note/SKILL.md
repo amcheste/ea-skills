@@ -35,8 +35,25 @@ These become the "Carry-Forward from Yesterday" section.
 ### 4. Pull today's calendar
 Try these sources in order to get the most complete picture:
 
-1. **Apple Calendar (preferred)** — use the AppleScript at `../task-manager/scripts/calendar_read.scpt` to read today's events. This covers ALL accounts the user has added (work Exchange/Outlook, iCloud, Google, etc.) in one call: `osascript /path/to/scripts/calendar_read.scpt "YYYY-MM-DD"`
-2. **Google Calendar MCP** — use `gcal_list_events` as a supplement or fallback if AppleScript isn't available.
+1. **Apple Calendar (preferred)** — use the `Control_your_Mac osascript` MCP tool with this inline AppleScript:
+```applescript
+tell application "Calendar"
+    set eventsList to {}
+    set dateStart to current date
+    set time of dateStart to 0
+    set dateEnd to dateStart + 86400
+    repeat with aCalendar in every calendar
+        repeat with anEvent in (every event in aCalendar whose start date ≥ dateStart and start date ≤ dateEnd)
+            set eventData to (summary of anEvent) & " [" & (name of aCalendar) & "]"
+            set end of eventsList to eventData
+        end repeat
+    end repeat
+    return eventsList
+end tell
+```
+This covers ALL accounts the user has added (work Exchange/Outlook, iCloud, Google, etc.).
+
+2. **Google Calendar MCP** — use `gcal_list_events` as a supplement or fallback.
 3. If neither is available, leave the schedule section with a placeholder for the user to fill in.
 
 Format events as a clean schedule with times, sorted chronologically. Include the calendar name in brackets if the user has multiple accounts (e.g., `[Work]`, `[Personal]`).
@@ -62,9 +79,9 @@ tags: [daily]
 3.
 
 ### Schedule
-> Events pulled from Google Calendar
-- HH:MM — Event name
-- HH:MM — Event name
+> Events from Apple Calendar and Google Calendar
+- HH:MM — Event name [Calendar]
+- HH:MM — Event name [Calendar]
 
 ### Carry-Forward from Yesterday
 - [items from yesterday's note]
@@ -80,7 +97,10 @@ tags: [daily]
 
 ## Log
 
-### Work
+### Academic
+-
+
+### Side Projects
 -
 
 ### Personal
@@ -108,7 +128,7 @@ tags: [daily]
 **Yesterday:** [[MM-DD-YYYY]]  |  **Tomorrow:** [[MM-DD-YYYY]]
 ```
 
-The Log section categories above (Work, Personal) are defaults. Users should customize these to match their own life areas — for example: Academic, Side Projects, Health, Creative, etc.
+The Log section categories above are defaults. Users should customize these to match their own life areas.
 
 ### 6. Write the file
 Save to `Daily Journal/MM-DD-YYYY.md` in the vault.

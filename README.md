@@ -64,17 +64,24 @@ Edit both the template and the skill's SKILL.md to match your categories.
 
 ### 4. Optional: Apple Reminders Integration
 
-The task manager skill uses AppleScript to read and write Apple Reminders. Set up these lists in your Reminders app to match the skill's routing:
+The task manager skill uses the `Control_your_Mac osascript` MCP tool to read and write Apple Reminders via inline AppleScript. The default list routing is:
 
-- **Personal** — life admin, errands, family, health
-- **Academic** — coursework, assignments, research deadlines
-- **Side Projects** — personal projects and experiments
+- **To Do** — general tasks
+- **NCSU** — academic work (customize to your school)
+- **CAM** — work/business tasks (customize to your company)
+- **House** — home projects
+- **Family** — family-related tasks
+- **Groceries** — shopping lists
 
-The skill includes bundled AppleScript files (`scripts/`) that handle reading, adding, and completing reminders. These work on any Mac with the Reminders app — no additional setup required.
+Customize the list names in the task-manager SKILL.md to match your own Reminders lists.
 
-### 5. Optional: Google Calendar Integration
+### 5. Optional: Apple Calendar Integration
 
-The daily note skill can pull events from Google Calendar if you have the Google Calendar MCP connector set up in Claude. Without it, the schedule section will be left blank for you to fill in manually.
+The skills read Apple Calendar via the `Control_your_Mac osascript` MCP tool, which covers ALL accounts you've added to the Calendar app (work Exchange/Outlook, iCloud, Google, etc.). This is the preferred calendar source since it aggregates everything in one place. No extra setup needed — just add your accounts in System Settings → Internet Accounts.
+
+### 6. Optional: Google Calendar Integration
+
+The skills can also pull events from Google Calendar MCP as a supplement. This is useful if you don't have the `Control_your_Mac osascript` MCP available (e.g., running in a sandboxed environment). Set up the Google Calendar MCP connector in Claude to enable it.
 
 ## Philosophy
 

@@ -24,8 +24,24 @@ Here's how to decide where something lands:
 ### Tasks and reminders → Today's Daily Note + Apple Reminders
 Anything that needs to be done. "Remind me to...", "I need to...", "Don't forget to..."
 - Add as a `- [ ]` checkbox item in the **Inbox** section of today's daily note
-- **Also add to Apple Reminders** using the AppleScript at `../task-manager/scripts/reminders_add.scpt`. Route to the right list: Academic, Personal, or Side Projects based on context.
+- **Also add to Apple Reminders** using the `Control_your_Mac osascript` MCP tool. Route to the right list:
+  - MBA / academic work → **NCSU**
+  - CAM Advisory & Labs → **CAM**
+  - Home stuff → **House**
+  - Family → **Family**
+  - Groceries / shopping → **Groceries**
+  - Everything else → **To Do**
 - If the task clearly belongs to a specific Log category (Academic, Work, Personal, etc.), also consider putting it there instead
+
+Example AppleScript to add a reminder:
+```applescript
+tell application "Reminders"
+    tell list "To Do"
+        set newReminder to make new reminder with properties {name:"Task name here", priority:5}
+    end tell
+end tell
+```
+Priority: 1 = high, 5 = medium, 9 = low.
 
 ### Ideas → Ideas folder
 Bigger thoughts, project concepts, "what if" musings, things to explore later.
@@ -65,4 +81,4 @@ When in doubt, put it in today's Inbox. The user can sort it later during their 
 
 5. **Batch captures are fine.** If the user rattles off five things at once, capture all of them. Don't make them send one at a time.
 
-6. **Tasks go to both places.** If something is actionable (a todo, reminder, or deadline), add it to both the daily note AND Apple Reminders so it syncs to the user's phone. Use the AppleScript at `../task-manager/scripts/reminders_add.scpt`.
+6. **Tasks go to both places.** If something is actionable (a todo, reminder, or deadline), add it to both the daily note AND Apple Reminders via the `Control_your_Mac osascript` MCP so it syncs to the user's phone.

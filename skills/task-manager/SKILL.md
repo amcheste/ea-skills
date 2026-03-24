@@ -14,68 +14,108 @@ Tasks and events live across three places that stay in sync:
 - **Apple Calendar** — the canonical calendar (can include work Exchange/Outlook, iCloud, Google, etc.)
 - **Obsidian daily note** — where tasks and schedule show up in context alongside the day's plan
 
-The user's Reminders lists match their vault structure:
-- **Personal** — life admin, errands, family, health
-- **Academic** — MBA, CSC, Research deadlines and assignments
-- **Side Projects** — personal projects and experiments
+The user's Reminders lists:
+- **To Do** — general tasks
+- **NCSU** — MBA, CSC, Research deadlines and assignments
+- **CAM** — CAM Advisory & Labs work
+- **House** — home projects and maintenance
+- **Family** — family-related tasks
+- **Groceries** — shopping lists
+- **Transcribe Notes** — notes to transcribe
+- **2026 Goals** — annual goals and milestones
 
-## Reading Tasks from Apple Reminders
+## Interacting with Apple Reminders and Calendar
 
-Use the bundled AppleScript to pull tasks. The script is at `scripts/reminders_read.scpt` relative to this skill's directory. Find the skill directory by searching for this SKILL.md file's location.
+Use the `Control_your_Mac osascript` MCP tool to run AppleScript inline. This is the primary method — it works in scheduled tasks and Claude Code sessions. Do NOT rely on bundled .scpt files.
 
-```bash
-# Read all incomplete reminders
-osascript /path/to/skills/task-manager/scripts/reminders_read.scpt
+### Reading all incomplete reminders
 
-# Read from a specific list
-osascript /path/to/skills/task-manager/scripts/reminders_read.scpt "Personal"
+```applescript
+tell application "Reminders"
+    set allReminders to {}
+    repeat with reminderList in every list
+        set listName to name of reminderList
+        repeat with remItem in every reminder in reminderList
+            if not completed of remItem then
+                set remData to {listName, name of remItem}
+                set end of allReminders to remData
+            end if
+        end repeat
+    end repeat
+    return allReminders
+end tell
 ```
 
-Output format (one line per task):
-```
-LIST:Personal|TASK:Call dentist|DUE:2026-03-25|PRIORITY:medium|NOTES:
-LIST:Academic|TASK:MBA assignment draft|DUE:2026-03-28|PRIORITY:high|NOTES:Chapter 4 analysis
-```
+### Adding a reminder
 
-## Adding Tasks to Apple Reminders
-
-```bash
-# osascript reminders_add.scpt "list" "task" "due_date_or_empty" "priority_or_empty" "notes_or_empty"
-osascript /path/to/scripts/reminders_add.scpt "Academic" "Submit MBA paper" "2026-03-28" "high" "Final draft with citations"
-osascript /path/to/scripts/reminders_add.scpt "Personal" "Buy groceries" "" "low" ""
+```applescript
+tell application "Reminders"
+    tell list "NCSU"
+        set newReminder to make new reminder with properties {name:"MBA assignment draft", priority:1}
+        set body of newReminder to "Chapter 4 analysis — due Friday"
+    end tell
+end tell
 ```
 
-Priority values: "high", "medium", "low", or "" for none.
-Due dates: "YYYY-MM-DD" format, or "" for no due date.
+Priority values: 1 = high, 5 = medium, 9 = low, 0 = none.
 
-## Reading Events from Apple Calendar
-
-The bundled AppleScripts can read events from ALL calendars in the user's Apple Calendar app — including work accounts (Exchange, Outlook), iCloud, and Google calendars. This is especially useful when Google Calendar MCP only covers one account but the user has multiple calendars on their Mac.
-
-```bash
-# List all available calendars
-osascript /path/to/skills/task-manager/scripts/calendar_list.scpt
-
-# Read events for a specific date
-osascript /path/to/skills/task-manager/scripts/calendar_read.scpt "2026-03-24"
-
-# Read events for a date range
-osascript /path/to/skills/task-manager/scripts/calendar_read.scpt "2026-03-24" "2026-03-28"
+To set a due date:
+```applescript
+tell application "Reminders"
+    tell list "To Do"
+        set newReminder to make new reminder with properties {name:"Task name", priority:5}
+        set due date of newReminder to date "2026-03-28"
+    end tell
+end tell
 ```
 
-Output format (one line per event):
-```
-CAL:Work|EVENT:Team standup|START:March 24, 2026 at 9:00:00 AM|END:March 24, 2026 at 9:30:00 AM|ALLDAY:false|LOCATION:Zoom|NOTES:
-CAL:Personal|EVENT:Dentist|START:March 24, 2026 at 2:00:00 PM|END:March 24, 2026 at 3:00:00 PM|ALLDAY:false|LOCATION:|NOTES:
+### Completing a reminder
+
+```applescript
+tell application "Reminders"
+    tell list "NCSU"
+        set matchingReminders to (every reminder whose name is "MBA assignment draft" and completed is false)
+        if (count of matchingReminders) > 0 then
+            set completed of item 1 of matchingReminders to true
+        end if
+    end tell
+end tell
 ```
 
-When building the daily schedule or prioritizing tasks, use Apple Calendar as the primary source for events. It captures everything the user has across all their accounts. Use Google Calendar MCP as a supplement if available, but Apple Calendar is more complete since it aggregates all accounts.
+### Reading Apple Calendar events
 
-## Completing Tasks
+This covers ALL accounts the user has added (work Exchange/Outlook, iCloud, Google, etc.):
 
-```bash
-osascript /path/to/scripts/reminders_complete.scpt "Personal" "Call dentist"
+```applescript
+tell application "Calendar"
+    set eventsList to {}
+    set dateStart to current date
+    set time of dateStart to 0
+    set dateEnd to dateStart + 86400
+    repeat with aCalendar in every calendar
+        repeat with anEvent in (every event in aCalendar whose start date ≥ dateStart and start date ≤ dateEnd)
+            set eventData to (summary of anEvent) & " [" & (name of aCalendar) & "]"
+            set end of eventsList to eventData
+        end repeat
+    end repeat
+    return eventsList
+end tell
 ```
+
+For a specific date range, modify `dateStart` and `dateEnd` accordingly.
+
+Use Apple Calendar as the primary source for events — it aggregates all accounts. Supplement with Google Calendar MCP (`gcal_list_events`) if available.
+
+## List Routing
+
+When adding tasks, route to the right list based on context:
+- MBA / academic work → **NCSU**
+- CAM Advisory & Labs work → **CAM**
+- Home projects / maintenance → **House**
+- Family-related → **Family**
+- Grocery/shopping items → **Groceries**
+- Annual goals → **2026 Goals**
+- Everything else → **To Do**
 
 ## Prioritization Framework
 
@@ -84,9 +124,9 @@ This is where you earn your keep as an EA. When the user asks what to focus on, 
 ### Step 1: Gather context
 
 Before prioritizing, understand the landscape:
-1. Pull all incomplete reminders from Apple Reminders
+1. Pull all incomplete reminders from Apple Reminders via osascript
 2. Read today's daily note (schedule, inbox items, carry-forward)
-3. Pull today's events from Apple Calendar (covers all accounts — work, personal, etc.) using `calendar_read.scpt`. Supplement with Google Calendar MCP if available.
+3. Pull today's events from Apple Calendar via osascript. Supplement with Google Calendar MCP if available.
 4. Calculate free time blocks by subtracting meetings from the day
 5. Note any deadlines within the next 7 days
 
@@ -145,18 +185,18 @@ When creating or updating daily notes:
 - When the user says they completed something, mark it done in both places
 
 When the user checks off a task in conversation:
-1. Mark it complete in Apple Reminders using the complete script
+1. Mark it complete in Apple Reminders via osascript
 2. Update the daily note if the task appears there
 3. Brief confirmation: "Done — marked 'MBA assignment draft' complete in Reminders and your daily note."
 
 ## Adding Tasks
 
 When the user wants to add a task, figure out:
-1. **Which list?** Route based on context (school stuff → Academic, life stuff → Personal, etc.)
-2. **Priority?** If they say "important" or "ASAP" → high. If they say "whenever" or "at some point" → low. If unclear, default to medium.
+1. **Which list?** Route based on context using the routing rules above
+2. **Priority?** If they say "important" or "ASAP" → 1. If they say "whenever" or "at some point" → 9. If unclear, default to 5.
 3. **Due date?** If they mention a deadline, set it. If they say "this week," set it to Friday. If no date mentioned, leave it blank.
-4. **Notes?** Any extra context they provide goes in the notes field.
+4. **Notes?** Any extra context they provide goes in the body.
 
 Then add to both Apple Reminders AND today's daily note Inbox.
 
-Confirm in one line: "Added 'Submit MBA paper' to Academic (due Friday, high priority)."
+Confirm in one line: "Added 'Submit MBA paper' to NCSU (due Friday, high priority)."

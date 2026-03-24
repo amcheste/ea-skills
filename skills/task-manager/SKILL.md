@@ -46,13 +46,29 @@ tell application "Reminders"
 end tell
 ```
 
-### Adding a reminder
+### Adding a reminder with a due date
+
+When a task should be done today, always set the due date to today. This makes it show up in the "Today" smart list on iPhone/Apple Watch.
 
 ```applescript
 tell application "Reminders"
     tell list "NCSU"
-        set newReminder to make new reminder with properties {name:"MBA assignment draft", priority:1}
-        set body of newReminder to "Chapter 4 analysis — due Friday"
+        set newReminder to make new reminder with properties {name:"MBA assignment draft", priority:1, due date:date "2026-03-25"}
+        set body of newReminder to "Chapter 4 analysis"
+    end tell
+end tell
+```
+
+Replace the date string with the actual target date in "YYYY-MM-DD" format.
+
+### Adding a reminder without a due date
+
+For lower-priority or "someday" tasks:
+
+```applescript
+tell application "Reminders"
+    tell list "To Do"
+        set newReminder to make new reminder with properties {name:"Explore Obsidian plugins", priority:9}
     end tell
 end tell
 ```

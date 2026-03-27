@@ -17,6 +17,7 @@ These skills are designed for use with [Claude](https://claude.ai) in Cowork mod
 | [Project Setup](skills/project-setup/) | Creates project notes from templates with proper linking and task breakdown | Done |
 | [Meeting Notes](skills/meeting-notes/) | Creates meeting notes with prep mode, capture mode, and action item tracking | Done |
 | [Task Manager](skills/task-manager/) | Apple Reminders + Apple Calendar integration with Eisenhower matrix prioritization, synced to vault | Done |
+| [Vault Context](skills/vault-context/) | Scans recent vault activity to understand what you've been working on — feeds into briefings, prioritization, and reviews | Done |
 
 ### Templates
 

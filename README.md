@@ -1,168 +1,163 @@
-# EA Skills
+# EA Agent
 
-A collection of Claude skills that turn AI into a virtual executive assistant (EA), built around an Obsidian vault as the central knowledge base.
+A Claude plugin that turns AI into a personalized virtual executive assistant, built around your Obsidian vault as the central knowledge base.
 
-These skills are designed for use with [Claude](https://claude.ai) in Cowork mode or Claude Code. They teach Claude how to manage your daily workflow — planning your mornings, capturing action items, running weekly reviews, and keeping everything organized in your Obsidian vault.
+Install it once, run `/ea-agent:setup`, and your EA learns who you are — your tools, your schedule, your priorities, and your working style. Every skill reads your profile to give you personalized, context-aware assistance that gets smarter over time.
 
-## What's Included
+## Skills
 
-### Skills
+| Skill | What it does |
+|-------|-------------|
+| [Setup](skills/setup/) | Onboards you with a short questionnaire and writes your EA profile to your vault. Run this first, and again when upgrading. |
+| [Daily Note](skills/obsidian-daily-note/) | Creates your daily journal with morning planning, today's calendar, carry-forward from yesterday, and an evening reflection section |
+| [Quick Capture](skills/quick-capture/) | Zero-friction capture — say what's on your mind and it gets filed in the right place in your vault and task manager |
+| [Task Manager](skills/task-manager/) | Manages tasks across Apple Reminders and your vault with Eisenhower matrix prioritization and calendar-aware planning |
+| [Inbox Processing](skills/inbox-processing/) | Scans Gmail and Slack for action items and surfaces what actually needs your attention |
+| [Meeting Notes](skills/meeting-notes/) | Prep briefs before meetings, structured capture during/after, and action item tracking with people notes |
+| [Project Setup](skills/project-setup/) | Creates project notes from a template with goals, milestones, task breakdown, and vault linking |
+| [Weekly Review](skills/weekly-review/) | Synthesizes your week from daily notes, previews next week's calendar, and guides you through planning |
+| [Vault Context](skills/vault-context/) | Scans your recent vault activity to understand momentum, stuck items, and patterns — feeds every other skill |
 
-| Skill | Description | Status |
-|-------|-------------|--------|
-| [Daily Note](skills/obsidian-daily-note/) | Creates and manages daily journal notes with morning planning, calendar integration, carry-forward from yesterday, and evening reflection | Done |
-| [Quick Capture](skills/quick-capture/) | Zero-friction note capture — just say what's on your mind and it gets filed in the right place | Done |
-| [Weekly Review](skills/weekly-review/) | Generates weekly review notes, summarizes daily notes, previews next week's calendar | Done |
-| [Inbox Processing](skills/inbox-processing/) | Scans Gmail and Slack for action items, surfaces them in your daily note | Done |
-| [Project Setup](skills/project-setup/) | Creates project notes from templates with proper linking and task breakdown | Done |
-| [Meeting Notes](skills/meeting-notes/) | Creates meeting notes with prep mode, capture mode, and action item tracking | Done |
-| [Task Manager](skills/task-manager/) | Apple Reminders + Apple Calendar integration with Eisenhower matrix prioritization, synced to vault | Done |
-| [Vault Context](skills/vault-context/) | Scans recent vault activity to understand what you've been working on — feeds into briefings, prioritization, and reviews | Done |
-
-### Templates
-
-Obsidian-compatible markdown templates in the `templates/` folder:
-
-- **daily-note.md** — Morning planning + evening reflection
-- **weekly-review.md** — End-of-week check-in with metrics and priorities
-- **meeting-notes.md** — Agenda, notes, decisions, and action items
-- **project.md** — Project overview with goals, milestones, and tasks
-
-## Fresh Install / Disaster Recovery
-
-If you're setting this up on a new machine or recovering from scratch, follow these steps in order.
+## Install
 
 ### Prerequisites
 
-- **macOS** (required for Apple Reminders and Calendar integration via AppleScript)
-- **Obsidian** — [download here](https://obsidian.md)
-- **Claude Desktop App** with Cowork mode enabled, OR **Claude Code** CLI
-- **Slack** (optional) — for morning briefings, evening check-ins, and Slack capture
-- **Gmail / Google Calendar MCP connectors** (optional) — for email inbox processing and supplemental calendar
+- **macOS** — required for Apple Reminders and Calendar integration via AppleScript
+- **Obsidian** — [obsidian.md](https://obsidian.md)
+- **Claude Code** or **Claude Desktop** with Cowork mode
 
-### Step 1: Clone this repo
+### 1. Install the plugin
 
-```bash
-git clone https://github.com/amcheste/ea-skills.git ~/ea-skills
+```
+/plugin install github:amcheste/ea-agent
 ```
 
-### Step 2: Set up your Obsidian vault
+When prompted, enter the full path to your Obsidian vault (e.g., `/Users/yourname/Documents/Obsidian/MyVault`).
 
-Create a new vault (or use an existing one) and set up the folder structure:
+### 2. Run setup
+
+```
+/ea-agent:setup
+```
+
+This walks you through a short questionnaire (about 5 minutes) and writes an `EA_PROFILE.md` file to your vault. Every skill reads this file to personalize its behavior for you — your folder structure, your task lists, your tools, your working style.
+
+You can re-run `/ea-agent:setup` any time to update your profile, and it will automatically detect and handle plugin upgrades.
+
+### 3. Connect your tools
+
+In Claude's MCP settings, connect the tools you want to use:
+
+| Tool | Required for |
+|------|-------------|
+| **Control your Mac** (`osascript`) | Apple Reminders and Calendar integration — required for task management |
+| **Slack** | Inbox processing, morning briefings, evening check-ins |
+| **Gmail** | Inbox processing |
+| **Google Calendar** | Supplemental calendar (Apple Calendar is the primary source) |
+
+### 4. Set up scheduled tasks (optional)
+
+For a fully automated EA, set up scheduled tasks in Cowork's Scheduled section:
+
+| Task | Suggested schedule | What it does |
+|------|-------------------|--------------|
+| Morning Briefing | 8:00 AM daily | Creates daily note, syncs tasks, DMs you a summary on Slack |
+| Inbox Processing | 8:30 AM weekdays | Scans Gmail and Slack, adds action items to daily note |
+| Slack Capture | 9 AM, 12 PM, 3 PM, 6 PM | Sweeps your Slack self-DMs into your vault inbox |
+| Evening Reflection | 8:00 PM daily | DMs you reflection prompts based on your day |
+| Weekly Review | 4:00 PM Fridays | Creates weekly review note, DMs you the highlights |
+
+After creating each scheduled task, click "Run now" once to pre-approve tool permissions — otherwise the first automatic run will pause waiting for your approval.
+
+### 5. Test it
+
+Say **"Good morning, let's plan my day"** in Cowork or Claude Code. You should get a daily note in your vault with today's calendar and carry-forward items, tasks synced to your task manager, and a morning briefing DM on Slack (if connected).
+
+## How the EA learns about you
+
+When you run `/ea-agent:setup`, your answers are saved to `EA_PROFILE.md` in your vault root. This file is your EA's memory — it's plain markdown, so you can read and edit it directly.
+
+Over time, the **Vault Context** skill adds observations to your profile as it learns your patterns:
+
+- Which times of day you do your best work
+- Which tasks you tend to carry forward or drop
+- Which projects are gaining or losing momentum
+- How your energy and focus vary across the week
+
+These observations accumulate in an `## EA Observations` section of your profile and make every skill smarter the longer you use it.
+
+## Upgrading
+
+When a new version of ea-agent is released, just run:
+
+```
+/ea-agent:setup
+```
+
+The setup skill checks your profile version and only asks about new fields — it won't make you repeat the whole onboarding.
+
+## Vault structure
+
+The EA expects (or will help you create) a folder structure like this in your vault:
 
 ```
 Your Vault/
+├── EA_PROFILE.md          ← written by /ea-agent:setup
 ├── Daily Journal/
 ├── Weekly Reviews/
 ├── Meetings/
+├── Projects/
+│   ├── Work/
+│   ├── Personal/
+│   └── (your areas)
 ├── Ideas/
 ├── People/
-├── Templates/
-├── Resources/
-├── Archive/
-└── Home.md
+└── Templates/
 ```
 
-Copy the templates from `~/ea-skills/templates/` into your vault's `Templates/` folder.
+Folder names are configurable — the setup skill asks what you actually use.
 
-### Step 3: Install the skills
+## Templates
 
-**For Claude Code:**
-Copy the skills into your Claude Code skills directory:
-```bash
-cp -r ~/ea-skills/skills/* ~/.claude/skills/
-```
+The `templates/` folder contains Obsidian-compatible markdown templates:
 
-**For Cowork mode:**
-When starting a Cowork session, mount your Obsidian vault folder AND the `~/ea-skills/skills/` folder so Claude can access both.
+- `daily-note.md` — Morning planning + evening reflection
+- `weekly-review.md` — End-of-week check-in with metrics and priorities
+- `meeting-notes.md` — Agenda, notes, decisions, and action items
+- `project.md` — Project overview with goals, milestones, and tasks
 
-### Step 4: Customize for your setup
+Copy these into your vault's `Templates/` folder.
 
-Edit the following files to match your personal setup:
+## Day-to-day usage
 
-**Reminders lists** — in `skills/task-manager/SKILL.md`, update the list routing section to match your Apple Reminders list names. The defaults are:
-- **To Do** — general tasks
-- **NCSU** — academic work (change to your school/org)
-- **CAM** — work tasks (change to your company)
-- **House** — home projects
-- **Family** — family tasks
-- **Groceries** — shopping
-
-**Daily note log categories** — in `skills/obsidian-daily-note/SKILL.md` and `templates/daily-note.md`, update the Log section categories. The defaults are Academic, Side Projects, Personal. Change to whatever areas of your life you want to track.
-
-### Step 5: Set up Apple integrations
-
-**Apple Calendar:** Add all your calendar accounts (work, personal, iCloud) in System Settings → Internet Accounts. The skills read from the macOS Calendar app directly, so any account you add there is automatically available.
-
-**Apple Reminders:** Create the Reminders lists that match your routing config from Step 4. The skills will also auto-create lists if they don't exist.
-
-### Step 6: Connect MCP tools
-
-In the Claude Desktop App, connect these MCP tools as needed:
-
-- **Control_your_Mac osascript** — required for Apple Reminders and Calendar integration
-- **Slack** — required for morning briefings, evening check-ins, and Slack capture
-- **Gmail** — required for inbox processing skill
-- **Google Calendar** — optional supplement to Apple Calendar
-
-### Step 7: Set up scheduled tasks
-
-Scheduled tasks run automatically on your Mac. Set these up in Cowork's Scheduled section (sidebar → Scheduled → create new):
-
-| Task | Schedule | What it does |
-|------|----------|--------------|
-| Morning Briefing | 8:00 AM daily | Creates daily note, syncs to Apple Reminders, Slack DMs you a summary |
-| Inbox Processing | 8:30 AM weekdays | Scans Gmail + Slack for action items, adds to daily note |
-| Slack-to-Obsidian Capture | 9 AM, 12 PM, 3 PM, 6 PM daily | Sweeps your Slack self-DMs into daily note Inbox |
-| Evening Reflection | 8:00 PM daily | Slack DMs you reflection questions based on your day |
-| Weekly Review Kickoff | 4:00 PM Fridays | Creates weekly review note from daily notes, Slack DMs summary |
-
-**Important:** After creating each scheduled task, click "Run now" once to pre-approve the tool permissions. Otherwise the first automatic run will pause waiting for approval.
-
-### Step 8: Test it
-
-Say "Good morning, let's plan my day" in Cowork or Claude Code. You should get a daily note created in your vault with calendar events and carry-forward items, tasks synced to Apple Reminders, and (if Slack is connected) a morning briefing DM.
-
-## Day-to-Day Usage
-
-Once set up, here's how to use the system:
-
-- **Morning:** The 8 AM briefing creates your daily note and Slack DMs you. Open Obsidian, review priorities, start working.
-- **During the day:** Quick capture thoughts by telling Claude "remind me to..." or "note to self..." — it files to your vault + Reminders. Or DM yourself on Slack and the sweep task picks it up.
-- **Prioritization:** Ask Claude "what should I focus on?" or "help me prioritize" — it pulls your tasks, calendar, and deadlines and gives you a realistic plan.
-- **Evening:** The 8 PM check-in Slack DMs you reflection questions. Fill in your daily note's evening section.
-- **Friday:** The 4 PM weekly review creates a summary note and Slack DMs you the highlights.
-
-## Customization
-
-### Log Categories
-The daily note template comes with Academic, Side Projects, and Personal. Customize these to match your life:
-- Client Work, Internal, Learning
-- Day Job, Creative, Family
-- Work, Health, Relationships
-
-Edit both the template and the daily note skill's SKILL.md.
-
-### Reminders Lists
-Update the routing in `skills/task-manager/SKILL.md` to match your Apple Reminders list names.
-
-### Scheduled Task Timing
-Adjust the cron schedules to match your routine. Night owl? Move the morning briefing to 10 AM. Early bird? Set it to 6 AM.
+- **Morning:** The 8 AM briefing creates your daily note. Review priorities, start working.
+- **During the day:** "Remind me to..." or "Note to self..." — filed to your vault and task manager instantly.
+- **Stuck or overwhelmed:** "What should I focus on?" — your EA pulls tasks, calendar, and deadlines and gives you a realistic plan.
+- **Evening:** The 8 PM check-in prompts your reflection. Fill in the evening section of your daily note.
+- **Friday:** The weekly review synthesizes your week and sets you up for the next one.
 
 ## Philosophy
 
-The idea is simple: your Obsidian vault is the single source of truth for your life, and Claude acts as your EA — helping you stay on top of things without you having to maintain the system yourself.
+Your Obsidian vault is the single source of truth for your work and life. Claude acts as your EA — not just following instructions, but noticing when you're overloaded, carrying forward what slipped, briefing you in the morning, and checking in at the end of the day.
 
-A good EA doesn't just follow instructions. They notice when you're overloaded and suggest prioritization. They carry forward what you forgot. They brief you in the morning and check in at the end of the day. These skills are designed to enable that kind of proactive, human-feeling assistance.
+A good EA is proactive, remembers context across days, and gets better the longer they work with you. That's what this plugin is designed to enable.
 
 ## Contributing
 
-If you build additional EA skills or improve the existing ones, contributions are welcome. The main things to keep in mind:
+Contributions welcome. A few things to keep in mind:
 
-- Skills should be generic enough to work for anyone (no hardcoded personal info)
-- Templates should use Obsidian's `{{date}}` syntax for compatibility
-- Keep the EA tone — conversational, proactive, not robotic
+- Skills should work for anyone — no hardcoded personal info (that belongs in `EA_PROFILE.md`)
+- Keep the EA tone: conversational, proactive, not robotic
+- Run `/ea-agent:setup` logic through the upgrade path when adding new profile fields (bump `profile_version`)
 
 ## License
 
-MIT
+MIT License
+
+Copyright (c) 2026
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.

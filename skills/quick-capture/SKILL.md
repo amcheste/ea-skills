@@ -34,9 +34,9 @@ Anything that needs to be done. "Remind me to...", "I need to...", "Don't forget
 - Add as a `- [ ]` checkbox item in the **Inbox** section of today's daily note
 - **Also add to Apple Reminders** using the `Control_your_Mac osascript` MCP tool
 - **Route to the right list using the user's profile** (`## Apple Reminders Lists` section). Default routing if no profile:
-  - MBA / academic work → **NCSU**
-  - CAM Advisory & Labs → **CAM**
-  - Home stuff → **House**
+  - Academic / school work → **School**
+  - Professional / work tasks → **Work**
+  - Home stuff → **Home**
   - Family → **Family**
   - Groceries / shopping → **Groceries**
   - Everything else → **To Do**

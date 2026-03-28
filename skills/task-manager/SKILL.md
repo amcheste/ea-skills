@@ -22,15 +22,14 @@ Tasks and events live across three places that stay in sync:
 - **Apple Calendar** — the canonical calendar (can include work Exchange/Outlook, iCloud, Google, etc.)
 - **Obsidian daily note** — where tasks and schedule show up in context alongside the day's plan
 
-**Reminders lists and routing rules come from the user's EA profile.** If the profile is not set up, use these defaults:
-- **To Do** — general tasks
-- **NCSU** — MBA, CSC, Research deadlines and assignments
-- **CAM** — CAM Advisory & Labs work
-- **House** — home projects and maintenance
+**Reminders lists and routing rules come from the user's EA profile.** If the profile is not set up, suggest they run `/ea-agent:setup` and fall back to these generic defaults:
+- **To Do** — general tasks (default catch-all)
+- **Work** — professional tasks and deadlines
+- **School** — academic assignments and deadlines
+- **Home** — home projects and maintenance
 - **Family** — family-related tasks
 - **Groceries** — shopping lists
-- **Transcribe Notes** — notes to transcribe
-- **2026 Goals** — annual goals and milestones
+- **Goals** — longer-term goals and milestones
 
 ## Interacting with Apple Reminders and Calendar
 
@@ -132,13 +131,13 @@ Use Apple Calendar as the primary source for events — it aggregates all accoun
 
 ## List Routing
 
-Use the routing rules from the user's EA profile (`## Apple Reminders Lists` section). Each list entry describes what belongs there. If no profile, use these defaults:
-- MBA / academic work → **NCSU**
-- CAM Advisory & Labs work → **CAM**
-- Home projects / maintenance → **House**
+Use the routing rules from the user's EA profile (`## Apple Reminders Lists` section). Each list entry describes what belongs there. If no profile, use these generic defaults:
+- Academic / school work → **School**
+- Professional / work tasks → **Work**
+- Home projects / maintenance → **Home**
 - Family-related → **Family**
 - Grocery/shopping items → **Groceries**
-- Annual goals → **2026 Goals**
+- Long-term goals → **Goals**
 - Everything else → **To Do**
 
 ## Prioritization Framework

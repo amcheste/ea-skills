@@ -1,0 +1,107 @@
+# Routing Evals
+#
+# Each scenario verifies that a user phrase triggers the correct skill.
+# The eval runner loads all skill descriptions and asks Claude to classify
+# the phrase — testing whether descriptions are clear and distinct.
+
+# ── setup ────────────────────────────────────────────────────────────────────
+- phrase: "Set up my EA"
+  expected_skill: setup
+
+- phrase: "I just installed the EA agent, what do I do first?"
+  expected_skill: setup
+
+- phrase: "Update my EA profile"
+  expected_skill: setup
+
+# ── obsidian-daily-note ───────────────────────────────────────────────────────
+- phrase: "Good morning, let's plan my day"
+  expected_skill: obsidian-daily-note
+
+- phrase: "Create my daily note"
+  expected_skill: obsidian-daily-note
+
+- phrase: "Wrap up my day"
+  expected_skill: obsidian-daily-note
+
+- phrase: "What's on my plate today?"
+  expected_skill: obsidian-daily-note
+
+# ── quick-capture ────────────────────────────────────────────────────────────
+- phrase: "Remind me to call the dentist tomorrow"
+  expected_skill: quick-capture
+
+- phrase: "Note to self: look into switching banks"
+  expected_skill: quick-capture
+
+- phrase: "Jot this down: the client wants revisions by Friday"
+  expected_skill: quick-capture
+
+- phrase: "I need to remember to renew my passport"
+  expected_skill: quick-capture
+
+# ── task-manager ─────────────────────────────────────────────────────────────
+- phrase: "What should I focus on today?"
+  expected_skill: task-manager
+
+- phrase: "Help me prioritize, I'm overwhelmed"
+  expected_skill: task-manager
+
+- phrase: "Show me all my open tasks"
+  expected_skill: task-manager
+
+- phrase: "What's due this week?"
+  expected_skill: task-manager
+
+# ── inbox-processing ─────────────────────────────────────────────────────────
+- phrase: "Check my email and Slack, what did I miss?"
+  expected_skill: inbox-processing
+
+- phrase: "Process my inbox"
+  expected_skill: inbox-processing
+
+- phrase: "Any important emails I need to deal with?"
+  expected_skill: inbox-processing
+
+- phrase: "What's waiting on me?"
+  expected_skill: inbox-processing
+
+# ── meeting-notes ────────────────────────────────────────────────────────────
+- phrase: "I just got out of a meeting with the design team"
+  expected_skill: meeting-notes
+
+- phrase: "Take notes for my 2pm standup"
+  expected_skill: meeting-notes
+
+- phrase: "Prep me for my 1:1 with my manager"
+  expected_skill: meeting-notes
+
+# ── project-setup ────────────────────────────────────────────────────────────
+- phrase: "Start a new project for the website redesign"
+  expected_skill: project-setup
+
+- phrase: "Set up a project page for the Q3 launch"
+  expected_skill: project-setup
+
+- phrase: "I'm working on a new side project, help me organize it"
+  expected_skill: project-setup
+
+# ── weekly-review ────────────────────────────────────────────────────────────
+- phrase: "Let's do my weekly review"
+  expected_skill: weekly-review
+
+- phrase: "How did my week go?"
+  expected_skill: weekly-review
+
+- phrase: "Plan next week"
+  expected_skill: weekly-review
+
+# ── vault-context ────────────────────────────────────────────────────────────
+- phrase: "What have I been working on lately?"
+  expected_skill: vault-context
+
+- phrase: "Show me my recent vault activity"
+  expected_skill: vault-context
+
+- phrase: "What are my active projects right now?"
+  expected_skill: vault-context

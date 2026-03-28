@@ -137,6 +137,39 @@ jobs:
           print(f"✓ All non-setup skills reference EA_PROFILE.md")
           EOF
 
+  evals:
+    name: Run Evals
+    runs-on: ubuntu-latest
+    # Only run on PRs — saves API costs on direct pushes to main
+    if: github.event_name == 'pull_request'
+    # Structural validation must pass before spending API tokens
+    needs: [validate-structure, validate-version]
+    env:
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install eval dependencies
+        run: pip install -r evals/requirements.txt
+
+      - name: Run routing evals
+        run: |
+          python evals/eval_runner.py \
+            --routing-only \
+            --pass-threshold 85
+
+      - name: Run behavioral evals
+        run: |
+          python evals/eval_runner.py \
+            --behavioral-only \
+            --pass-threshold 75
+
   validate-version:
     name: Validate Version Consistency
     runs-on: ubuntu-latest

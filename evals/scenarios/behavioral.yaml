@@ -1,0 +1,134 @@
+# Behavioral Evals
+#
+# Each scenario tests the quality of a skill's response in a specific situation.
+# The eval runner runs the skill as an agent, then uses a judge LLM to verify
+# the response meets all listed criteria.
+#
+# Good criteria are:
+#   - Specific and observable (not "the response is good")
+#   - Testable by reading the response text
+#   - Focused on one thing each
+
+# ── Profile fallback: skills handle missing profile gracefully ────────────────
+
+- name: "task-manager handles missing profile gracefully"
+  skill: task-manager
+  user_message: "What should I focus on today?"
+  context: >
+    No EA_PROFILE.md exists. The user has just installed the plugin and has not
+    run setup yet.
+  criteria:
+    - "Mentions running /ea-agent:setup or that a profile has not been configured"
+    - "Does not refuse to help — still offers to assist with task management"
+    - "Does not reference any hardcoded personal information like specific school or company names"
+
+- name: "quick-capture works without profile using generic defaults"
+  skill: quick-capture
+  user_message: "Remind me to schedule my car service this week"
+  context: >
+    No EA_PROFILE.md exists. The user has not run setup.
+  criteria:
+    - "Captures the task rather than refusing or only prompting for setup"
+    - "Routes to a generic list name (e.g., To Do, Home, or similar) rather than a specific personal list"
+    - "Confirms the capture in one brief sentence"
+
+- name: "inbox-processing prompts setup when no tools configured"
+  skill: inbox-processing
+  user_message: "Check my inbox, what did I miss?"
+  context: >
+    No EA_PROFILE.md exists. No Gmail or Slack accounts configured yet.
+  criteria:
+    - "Acknowledges that it needs account information or tool access to proceed"
+    - "Suggests running /ea-agent:setup to configure accounts"
+    - "Does not invent or fabricate inbox contents"
+
+# ── Setup skill behavior ──────────────────────────────────────────────────────
+
+- name: "setup asks questions before writing profile"
+  skill: setup
+  user_message: "Set up my EA"
+  context: >
+    No EA_PROFILE.md exists. Fresh install.
+  criteria:
+    - "Asks at least one question about the user before writing any files"
+    - "Does not claim to have already written EA_PROFILE.md in this response"
+    - "Explains what setup will do and why it matters"
+
+- name: "setup detects existing profile and offers update"
+  skill: setup
+  user_message: "Update my EA profile"
+  context: >
+    EA_PROFILE.md already exists with profile_version 1.0. The user wants to
+    make changes.
+  criteria:
+    - "Acknowledges the existing profile rather than starting from scratch"
+    - "Asks what the user wants to update rather than repeating all setup questions"
+    - "Does not overwrite or discard existing profile data"
+
+# ── Daily note quality ────────────────────────────────────────────────────────
+
+- name: "daily note briefing is conversational not robotic"
+  skill: obsidian-daily-note
+  user_message: "Good morning, let's start the day"
+  context: >
+    EA_PROFILE.md exists. User's name is Jordan. Peak hours are morning.
+    Today is a Tuesday with two meetings: a team standup at 9am and a client
+    call at 2pm. Yesterday's note had one incomplete task: review the proposal draft.
+  criteria:
+    - "Addresses the user by name or in a warm, personal tone"
+    - "Mentions the two calendar events for today"
+    - "References the incomplete task carried forward from yesterday"
+    - "Keeps the briefing concise — does not write more than a short paragraph of summary"
+
+- name: "daily note uses profile life areas not hardcoded defaults"
+  skill: obsidian-daily-note
+  user_message: "Create my daily note"
+  context: >
+    EA_PROFILE.md exists. Life areas are: Consulting Work, Personal Learning,
+    Family. Daily notes folder is called 'Journal'. User's name is Sam.
+  criteria:
+    - "Uses the profile's life area names (Consulting Work, Personal Learning, Family) as log sections"
+    - "Does not use the hardcoded defaults Academic, Side Projects, or Personal"
+    - "Saves the note to the 'Journal' folder, not 'Daily Journal'"
+
+# ── Task manager quality ──────────────────────────────────────────────────────
+
+- name: "task-manager prioritizes using Eisenhower matrix"
+  skill: task-manager
+  user_message: "Help me figure out what to work on, I have a ton of stuff"
+  context: >
+    EA_PROFILE.md exists. User has 8 open tasks including: submit project report
+    (due tomorrow), buy groceries (no deadline), reply to client email (client
+    is waiting), clean desk (nice to have). Two meetings today totaling 3 hours.
+  criteria:
+    - "Identifies the project report and client email as highest priority"
+    - "Flags the report as urgent given the tomorrow deadline"
+    - "Suggests groceries or desk cleaning can wait"
+    - "Gives a realistic assessment of available focus time given the meetings"
+
+# ── No personal info leakage ──────────────────────────────────────────────────
+
+- name: "skills do not reference removed personal identifiers"
+  skill: quick-capture
+  user_message: "Add a task to my work list to review the quarterly report"
+  context: >
+    EA_PROFILE.md exists with a Reminders list called 'Work' for professional tasks.
+  criteria:
+    - "Routes the task to the 'Work' list from the profile"
+    - "Does not mention NCSU, CAM, or any other hardcoded organization names"
+    - "Confirms the capture clearly"
+
+# ── Weekly review quality ─────────────────────────────────────────────────────
+
+- name: "weekly review is conversational and structured"
+  skill: weekly-review
+  user_message: "Let's do my weekly review"
+  context: >
+    EA_PROFILE.md exists. User's name is Alex. It is Friday afternoon.
+    The week had 3 completed tasks, 2 tasks that were carried forward every day,
+    and one big win: shipped a new feature. Next week has a product demo on Wednesday.
+  criteria:
+    - "Starts with wins — acknowledges the shipped feature"
+    - "Surfaces the two lingering tasks as open loops"
+    - "Mentions the Wednesday product demo as a key upcoming event"
+    - "Maintains a warm, Friday-afternoon tone — not a dry report"
